@@ -1,9 +1,5 @@
 ### **Executive Summary: The "Sovereign Cloud" Transition**
 
-**To:** Nithin Rajan
-**Date:** December 12, 2025
-**Subject:** Strategic Transition from iCloud to Local Self-Hosted Infrastructure
-
 #### **1. The Objective**
 
 To eliminate the 2TB iCloud dependency for your 20+ family devices and migrate to a **private, self-hosted cloud** running on your Mac Mini and 10TB Pegasus RAID. This transition will leverage **Immich** for photo management and **iMazing 3.4** for device state backups, ensuring data sovereignty, privacy, and long-term cost savings.
@@ -16,33 +12,34 @@ The following diagram illustrates how your data flows in the new "Tahoe-Era" set
 
 ```mermaid
 graph TD
-    subgraph "Family Devices (iOS 26)"
-        iPhone[iPhone 13 (Wife)]
-        iPad[iPad (Mom/Dad)]
+    subgraph FamilyDevices["Family Devices (iOS 26)"]
+        iPhone["iPhone 13 (Wife)"]
+        iPad["iPad (Mom/Dad)"]
     end
 
-    subgraph "Mac Mini Server (macOS Tahoe)"
-        PhoneApp[Mac Phone App]
-        JournalApp[Mac Journal App]
-        iMazing[iMazing 3.4]
-        Docker[Docker Container]
-        Immich[Immich Server]
+    subgraph MacMini["Mac Mini Server (macOS Tahoe)"]
+        PhoneApp["Mac Phone App"]
+        JournalApp["Mac Journal App"]
+        iMazing["iMazing 3.4"]
+        Immich["Immich Server (Docker)"]
     end
 
-    subgraph "Storage (10TB Pegasus)"
-        RAID[(10TB RAID 5)]
-        PhotoLib[Photos Library Archive]
-        iMazingBack[iMazing Backups]
-        ImmichDB[Immich Database & Assets]
+    subgraph Storage["Storage (10TB Pegasus)"]
+        RAID[("10TB RAID 5")]
+        PhotoLib["Photos Library Archive"]
+        iMazingBack["iMazing Backups"]
+        ImmichDB["Immich Database & Assets"]
     end
 
-    iPhone -- "Syncs Calls/Journal" --> PhoneApp & JournalApp
-    iPhone -- "Daily WiFi Backup" --> iMazing
-    iPhone -- "Real-time Photo Upload" --> Immich
+    iPhone -->|Syncs Calls| PhoneApp
+    iPhone -->|Syncs Journal| JournalApp
+    iPhone -->|Daily WiFi Backup| iMazing
+    iPhone -->|Real-time Photo Upload| Immich
     
-    Immich -- "Writes Data" --> ImmichDB
-    iMazing -- "Writes Data" --> iMazingBack
-    PhoneApp & JournalApp -- "Archived via Time Machine" --> RAID
+    Immich -->|Writes Data| ImmichDB
+    iMazing -->|Writes Data| iMazingBack
+    PhoneApp -->|Archived via TM| RAID
+    JournalApp -->|Archived via TM| RAID
     
     ImmichDB --> RAID
     iMazingBack --> RAID
@@ -104,5 +101,3 @@ This process is designed to prevent data loss. **Do not cancel iCloud until Phas
 | **Storage** | 10TB Pegasus R4 (RAID 5) | **Critical:** Enable "File Fast Clone" if formatted as APFS to save space on iMazing snapshots. |
 | **Software** | iMazing 3.4 | Required for macOS Tahoe compatibility. |
 | **Database** | PostgreSQL (Immich) | **Must be backed up.** Configure a cron job to dump the SQL database to a separate folder nightly. |
-
-### **Next Immediate Step**
